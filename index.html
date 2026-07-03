@@ -2,644 +2,1093 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>Spin & Win - Claim Your Reward</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#E60000">
+  <title>Airtel Nigeria – Claim ₦150 Instantly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    /* ═══════════════════════════════════════════════════
+       DESIGN TOKENS
+    ═══════════════════════════════════════════════════ */
+    :root {
+      --red:        #E60000;
+      --red-mid:    #A50000;
+      --red-deep:   #2A0000;
+      --black:      #0A0A0A;
+      --gold:       #FFD700;
+      --gold-warm:  #FF9500;
+      --white:      #FFFFFF;
+      --w80:        rgba(255,255,255,0.80);
+      --w55:        rgba(255,255,255,0.55);
+      --w25:        rgba(255,255,255,0.25);
+      --w12:        rgba(255,255,255,0.12);
+      --w06:        rgba(255,255,255,0.06);
+      --glass-bg:   rgba(255,255,255,0.07);
+      --glass-b:    rgba(255,255,255,0.14);
+      --green:      #00C853;
+      --r-lg:       20px;
+      --r-xl:       28px;
     }
+
+    /* ═══════════════════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(145deg, #ff7e5e 0%, #feb47b 30%, #ff6a4b 70%, #ffcc33 100%);
+      font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(160deg,
+        #E60000 0%,
+        #8A0000 28%,
+        #2A0000 55%,
+        #110000 75%,
+        #0A0A0A 100%);
       min-height: 100vh;
-      padding: 20px 16px 40px;
-      animation: gradientFlow 8s ease infinite;
-      background-size: 200% 200%;
-    }
-
-    @keyframes gradientFlow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* main container */
-    .container {
-      max-width: 550px;
-      margin: 0 auto;
+      color: var(--white);
+      overflow-x: hidden;
       position: relative;
     }
 
-    /* cards & glassmorphism */
-    .card, .spin-card, .trust-card, .step-card {
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(2px);
-      border-radius: 48px;
-      padding: 24px 20px;
-      margin-bottom: 24px;
-      box-shadow: 0 25px 45px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.5);
-      transition: all 0.25s ease;
+    /* Ambient glow orbs */
+    .glow-orb-1 {
+      position: fixed; pointer-events: none; z-index: 0;
+      top: -15%; left: -10%;
+      width: 55vw; height: 55vw; max-width: 360px; max-height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(230,0,0,0.35) 0%, transparent 70%);
+    }
+    .glow-orb-2 {
+      position: fixed; pointer-events: none; z-index: 0;
+      bottom: 5%; right: -15%;
+      width: 50vw; height: 50vw; max-width: 300px; max-height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,215,0,0.09) 0%, transparent 70%);
     }
 
-    /* hero / brand section */
-    .brand-logos {
-      display: flex;
-      justify-content: center;
-      gap: 28px;
-      align-items: center;
-      margin: 15px 0 10px;
-      flex-wrap: wrap;
+    /* ═══════════════════════════════════════════════════
+       ANIMATIONS
+    ═══════════════════════════════════════════════════ */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-    .logo-item {
-      background: white;
-      padding: 8px 18px;
-      border-radius: 60px;
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes pulseCTA {
+      0%,100% { box-shadow: 0 0 0 0 rgba(255,215,0,0.55), 0 8px 32px rgba(0,0,0,0.45); transform: scale(1); }
+      50%      { box-shadow: 0 0 0 14px rgba(255,215,0,0), 0 8px 32px rgba(0,0,0,0.45); transform: scale(1.018); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position:  200% center; }
+    }
+    @keyframes glowRing {
+      0%,100% { box-shadow: 0 0 0 0 rgba(255,215,0,0.7), 0 0 40px rgba(255,149,0,0.3); }
+      50%      { box-shadow: 0 0 0 16px rgba(255,215,0,0), 0 0 70px rgba(255,149,0,0.5); }
+    }
+    @keyframes floatBadge {
+      0%,100% { transform: translateY(0px); }
+      50%      { transform: translateY(-8px); }
+    }
+    @keyframes orbitSpin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes slideInLeft {
+      from { transform: translateX(-115%); opacity: 0; }
+      to   { transform: translateX(0);     opacity: 1; }
+    }
+    @keyframes slideOutLeft {
+      from { transform: translateX(0);     opacity: 1; }
+      to   { transform: translateX(-115%); opacity: 0; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes timerTick {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.7; }
+    }
+    @keyframes urgencyPulse {
+      0%,100% { background: rgba(230,0,0,0.14); }
+      50%      { background: rgba(230,0,0,0.24); }
+    }
+    @keyframes checkPop {
+      0%   { transform: scale(0); }
+      70%  { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════════════════ */
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       TOAST NOTIFICATIONS
+    ═══════════════════════════════════════════════════ */
+    #toast-container {
+      position: fixed;
+      bottom: 18px;
+      left: 10px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 8px;
+      pointer-events: none;
+      max-width: 290px;
+    }
+
+    .toast {
       display: flex;
       align-items: center;
       gap: 10px;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.1);
-      font-weight: 700;
+      background: rgba(8,8,8,0.94);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--w12);
+      border-left: 3px solid var(--gold);
+      border-radius: 14px;
+      padding: 10px 13px;
+      animation: slideInLeft 0.38s cubic-bezier(0.34,1.56,0.64,1) forwards;
     }
-    .logo-item img {
-      height: 28px;
-      width: auto;
-      object-fit: contain;
+    .toast.hiding {
+      animation: slideOutLeft 0.36s ease forwards;
     }
-    .logo-text {
-      font-size: 0.9rem;
-      color: #222;
+    .toast-avatar {
+      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--red), var(--red-mid));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: var(--white);
     }
+    .toast-name  { font-size: 11.5px; font-weight: 600; line-height: 1.3; }
+    .toast-msg   { font-size: 10.5px; color: var(--gold); font-weight: 500; }
+    .toast-time  { font-size: 9.5px;  color: var(--w55); margin-top: 1px; }
 
-    .glow-text {
-      font-size: 3.2rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #FFD166, #FF4500, #FFB347);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 8px rgba(255,200,0,0.5);
-      letter-spacing: -0.02em;
-      margin-bottom: 8px;
-    }
-
-    .subhead {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #1f2a3e;
-      background: rgba(255,255,200,0.7);
-      display: inline-block;
-      padding: 6px 18px;
-      border-radius: 60px;
-      backdrop-filter: blur(4px);
-    }
-
-    /* SPIN WHEEL custom */
-    .wheel-wrapper {
-      display: flex;
-      justify-content: center;
-      margin: 15px 0 25px;
-    }
-    canvas {
-      max-width: 280px;
-      width: 100%;
-      height: auto;
-      background: #fff0e0;
-      border-radius: 50%;
-      box-shadow: 0 20px 30px -5px rgba(0,0,0,0.3), 0 0 0 8px rgba(255,215,0,0.5);
-      transition: transform 0.2s;
-    }
-    .center-text {
+    /* ═══════════════════════════════════════════════════
+       HERO SECTION
+    ═══════════════════════════════════════════════════ */
+    .hero {
+      padding: 36px 0 28px;
       text-align: center;
-      margin-top: -45px;
+      animation: fadeInUp 0.65s ease both;
+    }
+
+    /* Logo */
+    .logo-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; margin-bottom: 20px;
+    }
+    .logo-circle {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    }
+    .logo-wordmark { display: flex; flex-direction: column; align-items: flex-start; }
+    .logo-brand {
+      font-size: 21px; font-weight: 900; letter-spacing: 1.5px;
+      color: var(--white); line-height: 1;
+    }
+    .logo-country {
+      font-size: 10px; font-weight: 600; letter-spacing: 2px;
+      color: var(--gold); text-transform: uppercase; margin-top: 1px;
+    }
+
+    /* Verified pill */
+    .verified-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,215,0,0.12);
+      border: 1px solid rgba(255,215,0,0.32);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 11px; font-weight: 600; color: var(--gold);
+      letter-spacing: 0.4px;
+      margin-bottom: 20px;
+    }
+    .verified-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+    }
+
+    /* Headline */
+    .hero-headline {
+      font-size: 27px; font-weight: 800; line-height: 1.22;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 16px rgba(0,0,0,0.35);
+    }
+    .hero-headline .gold { color: var(--gold); }
+
+    .hero-sub {
+      font-size: 13.5px; font-weight: 400; color: var(--w80);
+      line-height: 1.55; margin-bottom: 30px;
+    }
+
+    /* ── SIGNATURE ELEMENT: Floating gold ₦150 reward badge ── */
+    .reward-orbit {
       position: relative;
-      pointer-events: none;
-      z-index: 2;
-      font-weight: 800;
-      font-size: 1.2rem;
-      color: white;
-      text-shadow: 0 2px 5px black;
+      width: 160px; height: 160px;
+      margin: 0 auto 30px;
     }
-    .btn-spin {
-      background: linear-gradient(95deg, #ffb347, #ff6b35);
-      border: none;
-      padding: 16px 32px;
-      font-size: 1.7rem;
-      font-weight: 800;
-      border-radius: 60px;
-      color: white;
-      width: 80%;
-      margin: 20px auto 0;
-      display: block;
-      cursor: pointer;
-      box-shadow: 0 12px 25px -5px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.6);
-      transition: all 0.1s linear;
-      letter-spacing: 1px;
+    .reward-orbit-ring {
+      position: absolute; inset: -6px;
+      border-radius: 50%;
+      border: 2px dashed rgba(255,215,0,0.4);
+      animation: orbitSpin 9s linear infinite;
     }
-    .btn-spin:active {
-      transform: scale(0.97);
-      box-shadow: 0 5px 12px rgba(0,0,0,0.3);
-    }
-
-    /* popup modal */
-    .popup-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(5px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      visibility: hidden;
-      opacity: 0;
-      transition: 0.2s;
-    }
-    .popup-container {
-      background: white;
-      border-radius: 56px;
-      max-width: 85%;
-      width: 340px;
-      text-align: center;
-      padding: 28px 22px;
-      box-shadow: 0 30px 40px rgba(0,0,0,0.4);
-      animation: popupZoom 0.2s ease;
-    }
-    @keyframes popupZoom {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    .popup-buttons {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      margin-top: 24px;
-    }
-    .popup-btn {
-      background: #ff7b2c;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 40px;
-      font-weight: 800;
-      color: white;
-      cursor: pointer;
-      font-size: 1rem;
-      flex: 1;
-      max-width: 110px;
-    }
-    .popup-btn.no {
-      background: #6c757d;
-    }
-    .info-text {
-      background: #f1f3f5;
-      padding: 12px;
-      border-radius: 32px;
-      margin: 15px 0;
-      font-size: 0.8rem;
-      font-family: monospace;
-    }
-
-    /* second step (hidden) */
-    .step-two-section {
-      display: none;
-      animation: fadeSlide 0.5s ease;
-    }
-    @keyframes fadeSlide {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .final-cta {
-      background: linear-gradient(95deg, #28a745, #20c997);
-      font-size: 1.7rem;
-      padding: 18px;
-      width: 100%;
-      font-weight: 800;
+    .reward-orbit-ring::before {
+      content: '★';
+      position: absolute;
+      top: -8px; left: 50%; transform: translateX(-50%);
+      font-size: 10px; color: var(--gold);
     }
     .reward-badge {
-      background: gold;
-      display: inline-block;
-      padding: 8px 20px;
-      border-radius: 40px;
-      font-weight: bold;
-      margin: 12px 0;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: conic-gradient(from 180deg, #FFD700, #FF9500, #FFD700, #FFC300, #FF8C00, #FFD700);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      animation: glowRing 2.6s ease-in-out infinite, floatBadge 4.2s ease-in-out infinite;
+      position: relative;
+      cursor: default;
+    }
+    .reward-naira {
+      font-size: 44px; font-weight: 900;
+      color: #1A0000; line-height: 1;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .reward-sub {
+      font-size: 10.5px; font-weight: 700;
+      color: rgba(26,0,0,0.65);
+      letter-spacing: 1.5px; text-transform: uppercase;
+      margin-top: 3px;
     }
 
-    /* comments section */
-    .comment-item {
-      background: #fef9e8;
-      border-radius: 32px;
+    /* Timer */
+    .timer-row {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-b);
+      border-radius: 100px;
+      padding: 8px 18px;
+      margin-bottom: 24px;
+    }
+    .timer-label { font-size: 12px; font-weight: 500; color: var(--w55); }
+    #countdown {
+      font-size: 19px; font-weight: 700; color: var(--gold);
+      font-variant-numeric: tabular-nums;
+      animation: timerTick 1s step-start infinite;
+    }
+    #countdown.urgent { color: #FF4444; }
+
+    /* Primary CTA */
+    .btn-cta {
+      display: block; width: 100%;
+      padding: 18px 24px;
+      background: linear-gradient(135deg, #FFD700 0%, #FF9500 100%);
+      color: #1A0000;
+      font-family: 'Poppins', sans-serif;
+      font-size: 17px; font-weight: 700;
+      border: none; border-radius: var(--r-lg);
+      cursor: pointer;
+      text-decoration: none; text-align: center;
+      letter-spacing: 0.2px;
+      position: relative; overflow: hidden;
+      animation: pulseCTA 2.3s ease-in-out infinite;
+      transition: transform 0.12s ease;
+      -webkit-user-select: none; user-select: none;
+    }
+    .btn-cta:active { transform: scale(0.964); animation: none; }
+    .btn-cta::after {
+      content: '';
+      position: absolute; top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+      animation: shimmer 2.8s ease infinite;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       TRUST STRIP
+    ═══════════════════════════════════════════════════ */
+    .trust-strip {
+      margin: 18px 0;
+      animation: fadeInUp 0.65s 0.15s ease both;
+    }
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--glass-b);
+      border-radius: var(--r-lg);
+    }
+    .trust-card { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+    .trust-item { display: flex; align-items: center; gap: 11px; }
+    .trust-check {
+      width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(0,200,82,0.14);
+      border: 1.5px solid rgba(0,200,82,0.45);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: var(--green);
+      animation: checkPop 0.4s ease both;
+    }
+    .trust-text { font-size: 13px; font-weight: 400; color: var(--w80); }
+    .trust-text b { color: var(--white); font-weight: 600; }
+
+    /* ═══════════════════════════════════════════════════
+       PROGRESS BAR
+    ═══════════════════════════════════════════════════ */
+    .progress-section {
+      margin: 0 0 16px;
+      animation: fadeInUp 0.65s 0.22s ease both;
+    }
+    .progress-hdr {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 9px;
+    }
+    .progress-lbl { font-size: 12.5px; font-weight: 600; color: var(--w55); }
+    .step-pill {
+      font-size: 11px; font-weight: 600; color: var(--gold);
+      background: rgba(255,215,0,0.13);
+      border: 1px solid rgba(255,215,0,0.3);
+      padding: 3px 11px; border-radius: 100px;
+    }
+    .progress-track {
+      height: 7px;
+      background: var(--w12);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 33%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--gold), #FF9500, var(--gold));
+      background-size: 200% 100%;
+      animation: shimmer 1.8s linear infinite;
+      transition: width 0.7s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       URGENCY BANNER
+    ═══════════════════════════════════════════════════ */
+    .urgency-section {
+      margin: 0 0 16px;
+      animation: fadeInUp 0.65s 0.28s ease both;
+    }
+    .urgency-card {
+      display: flex; align-items: center; gap: 13px;
       padding: 14px 18px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      background: rgba(230,0,0,0.14);
+      border: 1px solid rgba(230,0,0,0.32);
+      border-radius: var(--r-lg);
+      animation: urgencyPulse 3s ease-in-out infinite;
     }
-    .avatar {
-      background: #ffbe76;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1.4rem;
+    .urgency-icon { font-size: 26px; flex-shrink: 0; }
+    .urgency-main { font-size: 13.5px; font-weight: 600; line-height: 1.35; }
+    .urgency-slots {
+      font-size: 11.5px; font-weight: 500; color: rgba(255,130,130,0.9);
+      margin-top: 3px;
     }
-    .comment-text {
-      flex:1;
-      font-weight: 500;
+    .urgency-slots .gold { color: var(--gold); font-weight: 700; }
+
+    /* ═══════════════════════════════════════════════════
+       HOW IT WORKS
+    ═══════════════════════════════════════════════════ */
+    .steps-section {
+      margin: 0 0 16px;
+      animation: fadeInUp 0.65s 0.34s ease both;
     }
-    .comment-time {
-      font-size: 0.7rem;
-      color: gray;
+    .section-title {
+      font-size: 15.5px; font-weight: 700; margin-bottom: 13px;
     }
-    textarea {
-      width: 100%;
-      border-radius: 28px;
-      border: 1px solid #ffbe76;
-      padding: 12px 18px;
-      font-family: inherit;
-      margin: 12px 0 6px;
-      resize: vertical;
+    .steps-list { display: flex; flex-direction: column; gap: 9px; }
+    .step-row {
+      display: flex; align-items: flex-start; gap: 13px;
+      padding: 14px 16px;
+      border-radius: 16px;
     }
-    .add-comment-btn {
-      background: #ffa559;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 60px;
-      font-weight: bold;
-      color: white;
-      margin-top: 5px;
+    .step-num {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--red), var(--red-mid));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(230,0,0,0.4);
+    }
+    .step-body { flex: 1; }
+    .step-name { font-size: 13.5px; font-weight: 600; margin-bottom: 2px; }
+    .step-desc { font-size: 11.5px; color: var(--w55); line-height: 1.45; }
+    .step-connector {
+      width: 2px; height: 10px; background: var(--w12);
+      margin: 0 0 0 22px;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       PAYMENT SECTION
+    ═══════════════════════════════════════════════════ */
+    .payment-section {
+      margin: 0 0 16px;
+      animation: fadeInUp 0.65s 0.40s ease both;
+    }
+    .payment-inner { padding: 18px 18px 14px; }
+    .payment-methods {
+      display: flex; gap: 9px; margin: 13px 0 12px;
+    }
+    .payment-tile {
+      flex: 1; text-align: center;
+      background: var(--w06);
+      border: 1px solid var(--w12);
+      border-radius: 13px;
+      padding: 14px 6px;
+    }
+    .payment-tile-icon { font-size: 26px; margin-bottom: 6px; }
+    .payment-tile-name { font-size: 10.5px; font-weight: 500; color: var(--w80); }
+    .payment-note {
+      font-size: 11.5px; color: var(--w55); line-height: 1.55;
+      border-top: 1px solid var(--w12); padding-top: 12px;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       SECURITY STRIP
+    ═══════════════════════════════════════════════════ */
+    .security-section {
+      margin: 0 0 16px;
+      animation: fadeInUp 0.65s 0.46s ease both;
+    }
+    .security-card {
+      display: flex; align-items: center; gap: 13px;
+      padding: 14px 18px;
+      background: rgba(0,180,82,0.08);
+      border: 1px solid rgba(0,180,82,0.22);
+      border-radius: var(--r-lg);
+    }
+    .security-icon { font-size: 26px; flex-shrink: 0; }
+    .security-text { font-size: 12px; color: var(--w80); line-height: 1.5; }
+    .security-text b { color: rgba(100,255,160,0.9); font-weight: 600; }
+
+    /* ═══════════════════════════════════════════════════
+       FINAL CTA
+    ═══════════════════════════════════════════════════ */
+    .final-cta-section {
+      padding: 4px 0 44px;
+      animation: fadeInUp 0.65s 0.52s ease both;
     }
     .disclaimer {
-      font-size: 0.7rem;
-      text-align: center;
-      color: #2c2c2c;
-      background: rgba(255,255,200,0.8);
-      border-radius: 60px;
-      padding: 10px;
-      margin-top: 18px;
+      font-size: 10.5px; color: var(--w25);
+      text-align: center; margin-top: 12px; line-height: 1.6;
     }
 
-    button {
+    /* ═══════════════════════════════════════════════════
+       SCROLL REVEAL
+    ═══════════════════════════════════════════════════ */
+    .sr {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .sr.in { opacity: 1; transform: translateY(0); }
+
+    /* ═══════════════════════════════════════════════════
+       STEP MODAL
+    ═══════════════════════════════════════════════════ */
+    #modal {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    #modal.open { display: flex; animation: fadeIn 0.28s ease; }
+
+    .modal-card {
+      width: 100%; max-width: 390px;
+      background: linear-gradient(160deg, #300000, #1C0000, #0D0D0D);
+      border: 1px solid var(--glass-b);
+      border-radius: var(--r-xl);
+      padding: 34px 24px;
+      text-align: center;
+    }
+
+    /* Loading step */
+    .spinner {
+      width: 56px; height: 56px;
+      border: 4px solid var(--w12);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      margin: 0 auto 20px;
+    }
+    .loading-title { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+    .loading-sub { font-size: 12.5px; color: var(--w55); line-height: 1.55; }
+
+    /* Question step */
+    .q-icon { font-size: 48px; margin-bottom: 14px; }
+    .q-title { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+    .q-sub { font-size: 13px; color: var(--w80); margin-bottom: 24px; line-height: 1.5; }
+    .q-buttons { display: flex; gap: 10px; }
+    .btn-yes {
+      flex: 1; padding: 15px;
+      background: linear-gradient(135deg, #00C853, #009940);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 600;
+      border: none; border-radius: 14px; cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    .btn-yes:active { transform: scale(0.96); }
+    .btn-no {
+      flex: 1; padding: 15px;
+      background: var(--w06);
+      border: 1px solid var(--w12);
+      color: var(--w55);
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 600;
+      border-radius: 14px; cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    .btn-no:active { transform: scale(0.96); }
+
+    /* Qualified step */
+    .qual-icon { font-size: 52px; margin-bottom: 14px; }
+    .qual-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+    .qual-amount { font-size: 36px; font-weight: 900; color: var(--gold); }
+    .qual-sub { font-size: 13px; color: var(--w80); margin: 8px 0 24px; line-height: 1.55; }
+    .btn-claim {
+      display: block; width: 100%;
+      padding: 17px 24px;
+      background: linear-gradient(135deg, #FFD700 0%, #FF9500 100%);
+      color: #1A0000;
+      font-family: 'Poppins', sans-serif;
+      font-size: 17px; font-weight: 700;
+      border: none; border-radius: 14px;
+      text-decoration: none; text-align: center;
       cursor: pointer;
-      transition: 0.1s;
+      animation: pulseCTA 2s ease-in-out infinite;
+      transition: transform 0.12s ease;
     }
-    .hide {
-      display: none;
-    }
-    .show {
-      display: block;
-    }
-    h1 {
-      font-size: 3rem;
-      line-height: 1.2;
-    }
-    hr {
-      margin: 10px 0;
+    .btn-claim:active { transform: scale(0.964); animation: none; }
+
+    /* ─── hidden steps ─── */
+    [data-step] { display: none; }
+    [data-step].active { display: block; }
+
+    /* ═══════════════════════════════════════════════════
+       CONFETTI CANVAS
+    ═══════════════════════════════════════════════════ */
+    #confetti {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 9998;
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <!-- STEP 1: Hero + Spin Wheel Section (initial) -->
-  <div id="stepOneContainer">
-    <div class="card" style="text-align: center; padding-bottom: 20px;">
-      <h1 class="glow-text">SPIN & WIN</h1>
-      <div class="subhead">🎁 Get up to 100 Rs today</div>
-      <div class="brand-logos">
-        <div class="logo-item"><span>📺</span><span class="logo-text">Tapmad</span></div>
-        <div class="logo-item"><span>💸</span><span class="logo-text">JazzCash</span></div>
+
+<!-- Ambient glow background orbs -->
+<div class="glow-orb-1"></div>
+<div class="glow-orb-2"></div>
+
+<!-- Toast notification container -->
+<div id="toast-container"></div>
+
+<!-- Confetti canvas -->
+<canvas id="confetti"></canvas>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════════════════ -->
+<main>
+  <div class="container">
+
+    <!-- ── HERO ── -->
+    <section class="hero">
+
+      <!-- Logo -->
+      <div class="logo-row">
+        <div class="logo-circle">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="15" cy="15" r="15" fill="#E60000"/>
+            <!-- Airtel-style wave signal arcs -->
+            <path d="M15 7 Q22 11 22 15 Q22 19 15 23" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+            <path d="M15 10.5 Q19 12.5 19 15 Q19 17.5 15 19.5" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="15" cy="15" r="2" fill="white"/>
+          </svg>
+        </div>
+        <div class="logo-wordmark">
+          <div class="logo-brand">AIRTEL</div>
+          <div class="logo-country">Nigeria</div>
+        </div>
       </div>
-      <div style="font-size: 0.8rem; background: rgba(0,0,0,0.1); display: inline-block; padding: 4px 14px; border-radius: 40px;">Sponsored by Tapmad & JazzCash</div>
+
+      <!-- Verified pill -->
+      <div class="verified-pill">
+        <div class="verified-dot"></div>
+        Verified Promo Offer &nbsp;✔
+      </div>
+
+      <!-- Headline -->
+      <h1 class="hero-headline">
+        Airtel Nigeria Promo –<br>
+        Get <span class="gold">₦150 Instantly!</span>
+      </h1>
+      <p class="hero-sub">Limited Offer for Airtel Users in Your Area.<br>Complete in under 2 minutes.</p>
+
+      <!-- ★ SIGNATURE: Floating glowing ₦150 badge ★ -->
+      <div class="reward-orbit">
+        <div class="reward-orbit-ring"></div>
+        <div class="reward-badge">
+          <div class="reward-naira">₦150</div>
+          <div class="reward-sub">CASH REWARD</div>
+        </div>
+      </div>
+
+      <!-- Countdown timer -->
+      <div class="timer-row">
+        <span class="timer-label">⏰ Offer expires in</span>
+        <span id="countdown">05:00</span>
+      </div>
+
+      <!-- Hero CTA -->
+      <button class="btn-cta" id="hero-cta">
+        🚀 &nbsp;Start Now – Claim ₦150
+      </button>
+
+    </section>
+
+    <!-- ── TRUST STRIP ── -->
+    <section class="trust-strip sr">
+      <div class="glass-card trust-card">
+        <div class="trust-item">
+          <div class="trust-check">✓</div>
+          <div class="trust-text"><b>100% Legitimate</b> – Verified promotional offer</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-check">✓</div>
+          <div class="trust-text"><b>Instant Payment</b> – Credited within minutes of completion</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-check">✓</div>
+          <div class="trust-text"><b>Limited Slots</b> – Today only, in your region</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PROGRESS BAR ── -->
+    <section class="progress-section sr">
+      <div class="progress-hdr">
+        <span class="progress-lbl">Your Progress</span>
+        <span class="step-pill" id="step-pill">Step 1 of 3</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </section>
+
+    <!-- ── URGENCY ── -->
+    <section class="urgency-section sr">
+      <div class="urgency-card">
+        <div class="urgency-icon">🔥</div>
+        <div>
+          <div class="urgency-main">Hurry! Offer filling up fast</div>
+          <div class="urgency-slots">
+            Only <span class="gold" id="slots-count">17</span> slots remaining in your area
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── HOW IT WORKS ── -->
+    <section class="steps-section sr">
+      <div class="section-title">🎯 How It Works</div>
+      <div class="steps-list">
+        <div class="step-row glass-card">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-name">Click "Start Now"</div>
+            <div class="step-desc">Tap the button to begin the quick offer process — takes under a minute</div>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-row glass-card">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-name">Confirm Your Status</div>
+            <div class="step-desc">Answer one simple question to confirm you are an Airtel subscriber</div>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-row glass-card">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-name">Receive ₦150</div>
+            <div class="step-desc">Complete the short task and your ₦150 is sent instantly</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PAYMENT SECTION ── -->
+    <section class="payment-section sr">
+      <div class="glass-card payment-inner">
+        <div class="section-title">💰 Payment Methods</div>
+        <div class="payment-methods">
+          <div class="payment-tile">
+            <div class="payment-tile-icon">🏦</div>
+            <div class="payment-tile-name">Bank Transfer</div>
+          </div>
+          <div class="payment-tile">
+            <div class="payment-tile-icon">📱</div>
+            <div class="payment-tile-name">Airtime Credit</div>
+          </div>
+          <div class="payment-tile">
+            <div class="payment-tile-icon">💳</div>
+            <div class="payment-tile-name">Mobile Wallet</div>
+          </div>
+        </div>
+        <p class="payment-note">
+          Once you complete the offer, receive ₦150 via bank transfer, Airtel airtime top-up, or your preferred mobile wallet — your choice.
+        </p>
+      </div>
+    </section>
+
+    <!-- ── SECURITY STRIP ── -->
+    <section class="security-section sr">
+      <div class="security-card">
+        <div class="security-icon">🔒</div>
+        <div class="security-text">
+          <b>256-bit SSL Encrypted.</b> Your personal information is fully protected and never shared with third parties.
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FINAL CTA ── -->
+    <section class="final-cta-section sr">
+      <button class="btn-cta" id="final-cta">
+        💰 &nbsp;Continue to Claim ₦150
+      </button>
+      <p class="disclaimer">
+        By continuing you agree to the offer terms &amp; conditions. Available to active Airtel subscribers in Nigeria only. One claim per user. This is a promotional affiliate offer.
+      </p>
+    </section>
+
+  </div><!-- /container -->
+</main>
+
+<!-- ═══════════════════════════════════════════════════════
+     STEP MODAL
+═══════════════════════════════════════════════════════ -->
+<div id="modal">
+  <div class="modal-card">
+
+    <!-- STEP 1: Verifying -->
+    <div data-step="1" class="active">
+      <div class="spinner"></div>
+      <div class="loading-title">Checking Your Eligibility</div>
+      <div class="loading-sub">Verifying Airtel subscriber status and available slots in your area…</div>
     </div>
 
-    <div class="spin-card" style="text-align: center;">
-      <div class="wheel-wrapper">
-        <canvas id="wheelCanvas" width="500" height="500" style="width:100%; max-width:280px; height:auto; cursor:pointer;"></canvas>
+    <!-- STEP 2: Question -->
+    <div data-step="2">
+      <div class="q-icon">📶</div>
+      <div class="q-title">Quick Confirmation</div>
+      <div class="q-sub">Are you currently an active Airtel subscriber in Nigeria?</div>
+      <div class="q-buttons">
+        <button class="btn-yes" id="btn-yes">✅ &nbsp;Yes, I am</button>
+        <button class="btn-no"  id="btn-no">❌ &nbsp;No</button>
       </div>
-      <div class="center-text" style="margin-top: -48px;">🔴 CLAIM NOW</div>
-      <button class="btn-spin" id="spinBtn">🎡 SPIN NOW</button>
     </div>
 
-    <!-- TRUST / COMMENTS SECTION (visible from start, remains even after transition but we'll reuse same block) -->
-    <div id="commentsGlobalSection" class="trust-card">
-      <h3 style="font-size: 1.5rem; margin-bottom: 12px;">💬 Real Winners</h3>
-      <div id="commentList">
-        <div class="comment-item"><div class="avatar">👩</div><div class="comment-text"><strong>Neha S.</strong> “I received 50Rs instantly 😍” <div class="comment-time">2 min ago</div></div></div>
-        <div class="comment-item"><div class="avatar">👨</div><div class="comment-text"><strong>Rahul K.</strong> “Legit offer! Got 20 Rs on JazzCash 📲” <div class="comment-time">15 min ago</div></div></div>
-        <div class="comment-item"><div class="avatar">😎</div><div class="comment-text"><strong>Priya M.</strong> “Spin gave me 100Rs! Unbelievable 😱” <div class="comment-time">1 hour ago</div></div></div>
-        <div class="comment-item"><div class="avatar">⭐</div><div class="comment-text"><strong>Ahmed R.</strong> “Tapmad + JazzCash = awesome combo, 10Rs credit” <div class="comment-time">3 hours ago</div></div></div>
+    <!-- STEP 3: Qualified -->
+    <div data-step="3">
+      <div class="qual-icon">🎉</div>
+      <div class="qual-title">You Qualify!</div>
+      <div class="qual-amount">₦150</div>
+      <div class="qual-sub">
+        A slot has been reserved for you. Complete the short offer below and your cash will be credited instantly.
       </div>
-      <div>
-        <textarea id="newCommentInput" rows="2" placeholder="Write your win story... 💬"></textarea>
-        <button id="postCommentBtn" class="add-comment-btn">+ Post as winner</button>
-      </div>
+      <!--
+        ╔═══════════════════════════════════════════╗
+        ║  REPLACE THE href BELOW WITH YOUR CPA LINK ║
+        ╚═══════════════════════════════════════════╝
+      -->
+      <a href="#YOUR_CPA_LINK_HERE"
+         class="btn-claim"
+         id="btn-claim"
+         target="_blank"
+         rel="noopener noreferrer">
+        🎁 &nbsp;Continue to Claim ₦150
+      </a>
     </div>
-    <div class="disclaimer">
-      ⚡ Limited offer for selected users. Terms apply. No purchase necessary. Rewards credited via JazzCash.
-    </div>
-  </div>
 
-  <!-- STEP 2: Hidden final step after popup transition -->
-  <div id="stepTwoContainer" class="step-two-section" style="display: none;">
-    <div class="card" style="text-align: center; background: #fff6e8;">
-      <div class="reward-badge">🎉 LAST STEP 🎉</div>
-      <h2 style="font-size: 1.8rem;">Complete last step to claim your reward</h2>
-      <p style="margin: 20px 0; font-weight: 500;">Your exclusive reward is reserved. Click below to verify & claim instantly.</p>
-      <button id="finalRedirectBtn" class="btn-spin final-cta" style="background: linear-gradient(95deg, #f39c12, #e67e22);">✅ CLAIM REWARD NOW →</button>
-      <div style="margin-top: 20px; font-size: 0.8rem;">⏳ Limited slots, quick action required!</div>
-    </div>
-    <!-- same trust section repeated? we can keep, but we already have below but we can show again, but we will move the comments block also in second step for consistency -->
-    <div id="stepTwoCommentsClone" style="margin-top: 10px;"></div>
-    <div class="disclaimer" style="margin-top: 10px;">*Bonus credited via JazzCash within 24h after completion.</div>
   </div>
 </div>
 
-<!-- Popup Modal -->
-<div id="qualifyPopup" class="popup-overlay">
-  <div class="popup-container">
-    <div style="font-size: 3rem;">🎉</div>
-    <h3 style="margin: 8px 0;">Your number has been qualified!</h3>
-    <div id="deviceInfo" class="info-text">Loading device info...</div>
-    <div id="locationInfo" class="info-text">Detecting location...</div>
-    <div class="popup-buttons">
-      <button id="popupYes" class="popup-btn">YES ✅</button>
-      <button id="popupNo" class="popup-btn no">NO ❌</button>
-    </div>
-    <small style="display:block; margin-top: 12px;">Press any to continue ➡️</small>
-  </div>
-</div>
-
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════ -->
 <script>
-  (function() {
-    // ---------- SPIN WHEEL LOGIC (just simulation for attention grabbing) ----------
-    const canvas = document.getElementById('wheelCanvas');
-    const ctx = canvas.getContext('2d');
-    let width = 500, height = 500;
-    canvas.width = width;
-    canvas.height = height;
-    
-    const segments = [
-      { label: "10Rs", color: "#FFB347", value: 10 },
-      { label: "20Rs", color: "#FFD966", value: 20 },
-      { label: "50Rs", color: "#FF8C42", value: 50 },
-      { label: "100Rs", color: "#F4A261", value: 100 },
-      { label: "10Rs", color: "#E9C46A", value: 10 },
-      { label: "20Rs", color: "#F4A261", value: 20 },
-      { label: "50Rs", color: "#FFB347", value: 50 },
-      { label: "100Rs", color: "#E76F51", value: 100 }
-    ];
-    const segmentCount = segments.length;
-    const angleStep = (Math.PI * 2) / segmentCount;
-    
-    function drawWheel(rotateRad = 0) {
-      ctx.clearRect(0, 0, width, height);
-      for (let i = 0; i < segmentCount; i++) {
-        const start = i * angleStep + rotateRad;
-        const end = start + angleStep;
-        ctx.beginPath();
-        ctx.moveTo(width/2, height/2);
-        ctx.arc(width/2, height/2, width/2 - 10, start, end);
-        ctx.fillStyle = segments[i].color;
-        ctx.fill();
+'use strict';
+
+/* ─────────────────────────────────────────────
+   GLOBAL HELPERS (defined first so inline
+   handlers can call them if needed)
+───────────────────────────────────────────── */
+function triggerVibration() {
+  if ('vibrate' in navigator) navigator.vibrate([80, 35, 80]);
+}
+
+function triggerConfetti() {
+  const canvas = document.getElementById('confetti');
+  const ctx    = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const COLORS  = ['#FFD700','#E60000','#FFFFFF','#FF9500','#00C853','#FF6666','#FFC300'];
+  const COUNT   = 140;
+  const particles = [];
+
+  for (let i = 0; i < COUNT; i++) {
+    particles.push({
+      x:    Math.random() * canvas.width,
+      y:   -10 - Math.random() * 120,
+      w:    Math.random() * 9 + 4,
+      h:    Math.random() * 14 + 6,
+      c:    COLORS[Math.floor(Math.random() * COLORS.length)],
+      vx:  (Math.random() - 0.5) * 3.5,
+      vy:   Math.random() * 3 + 2,
+      rot:  Math.random() * 360,
+      rotV:(Math.random() - 0.5) * 7,
+      op:   1,
+    });
+  }
+
+  let raf;
+  const tick = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    particles.forEach(p => {
+      p.x   += p.vx;
+      p.y   += p.vy;
+      p.vy  += 0.06;
+      p.rot += p.rotV;
+      if (p.y > canvas.height * 0.75) p.op -= 0.025;
+      if (p.op > 0) {
+        alive = true;
         ctx.save();
-        ctx.translate(width/2, height/2);
-        ctx.rotate(start + angleStep/2);
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.font = "bold 22px 'Inter'";
-        ctx.fillStyle = "#2d2d2d";
-        ctx.shadowBlur = 0;
-        ctx.fillText(segments[i].label, 100, 8);
+        ctx.globalAlpha = Math.max(0, p.op);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot * Math.PI / 180);
+        ctx.fillStyle = p.c;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
         ctx.restore();
       }
-      // draw inner circle & arrow indicator
-      ctx.beginPath();
-      ctx.arc(width/2, height/2, 35, 0, 2*Math.PI);
-      ctx.fillStyle = "#fff2df";
-      ctx.fill();
-      ctx.fillStyle = "#FF4500";
-      ctx.font = "bold 28px 'Inter'";
-      ctx.fillText("🎯", width/2-18, height/2+10);
-      // static pointer marker (triangle)
-      ctx.beginPath();
-      ctx.moveTo(width-35, height/2 - 12);
-      ctx.lineTo(width-12, height/2);
-      ctx.lineTo(width-35, height/2 + 12);
-      ctx.fillStyle = "#FFD966";
-      ctx.fill();
-      ctx.fillStyle = "#000";
-      ctx.font = "bold 14px monospace";
-      ctx.fillText("WIN", width-48, height/2+4);
+    });
+    if (alive) raf = requestAnimationFrame(tick);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  };
+  tick();
+  setTimeout(() => { cancelAnimationFrame(raf); ctx.clearRect(0,0,canvas.width,canvas.height); }, 5500);
+}
+
+/* ─────────────────────────────────────────────
+   1. COUNTDOWN TIMER
+───────────────────────────────────────────── */
+(function countdown() {
+  const el = document.getElementById('countdown');
+  let total = 5 * 60;
+
+  const format = n => String(n).padStart(2, '0');
+  const tick   = () => {
+    const m = Math.floor(total / 60);
+    const s = total % 60;
+    el.textContent = `${format(m)}:${format(s)}`;
+    if (total <= 60) el.classList.add('urgent');
+    if (total > 0) { total--; setTimeout(tick, 1000); }
+    else {
+      el.textContent = 'EXPIRED';
+      el.classList.add('urgent');
+      el.style.animation = 'none';
     }
-    
-    let currentRotation = 0;
-    drawWheel(currentRotation);
-    
-    // Spin animation (cosmetic)
-    let spinning = false;
-    const spinBtn = document.getElementById('spinBtn');
-    const popupOverlay = document.getElementById('qualifyPopup');
-    
-    // helpers: get device & location mock (simple but realistic)
-    function getDeviceInfo() {
-      let userAgent = navigator.userAgent;
-      let browser = "Unknown";
-      if (userAgent.indexOf("Chrome") > -1) browser = "Chrome";
-      else if (userAgent.indexOf("Safari") > -1) browser = "Safari";
-      else if (userAgent.indexOf("Firefox") > -1) browser = "Firefox";
-      let platform = navigator.platform || "Device";
-      return `${browser} on ${platform}`;
+  };
+  tick();
+})();
+
+/* ─────────────────────────────────────────────
+   2. SLOTS COUNTER (slow decrease)
+───────────────────────────────────────────── */
+(function slotsCounter() {
+  const el  = document.getElementById('slots-count');
+  let count = 17;
+
+  const decrease = () => {
+    if (count > 3) {
+      count--;
+      el.textContent = count;
+      el.style.transition = 'opacity 0.2s';
+      el.style.opacity = '0';
+      setTimeout(() => (el.style.opacity = '1'), 200);
+      const next = Math.random() * 18000 + 7000; // 7–25 sec
+      setTimeout(decrease, next);
     }
-    
-    function getLocationText() {
-      return new Promise((resolve) => {
-        if ("geolocation" in navigator) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              resolve(`📍 Approx: ${position.coords.latitude.toFixed(2)}, ${position.coords.longitude.toFixed(2)} (Pakistan region)`);
-            },
-            () => {
-              resolve("📍 Location: Islamabad / Lahore (based on ISP)");
-            }
-          );
-        } else {
-          resolve("📍 Pakistan (general region)");
-        }
-      });
-    }
-    
-    // Show popup with device & location data, also triggers transition after button click
-    let pendingTransition = false;
-    async function showQualifyPopup() {
-      if (pendingTransition) return;
-      pendingTransition = true;
-      const deviceSpan = document.getElementById('deviceInfo');
-      const locationSpan = document.getElementById('locationInfo');
-      deviceSpan.innerText = `📱 Device: ${getDeviceInfo()}`;
-      const locText = await getLocationText();
-      locationSpan.innerText = locText;
-      popupOverlay.style.visibility = "visible";
-      popupOverlay.style.opacity = "1";
-    }
-    
-    function closePopupAndProceed() {
-      popupOverlay.style.visibility = "hidden";
-      popupOverlay.style.opacity = "0";
-      // Transition: hide step 1 container and show step 2 container
-      const stepOne = document.getElementById('stepOneContainer');
-      const stepTwo = document.getElementById('stepTwoContainer');
-      if (stepOne && stepTwo) {
-        stepOne.style.display = 'none';
-        stepTwo.style.display = 'block';
-        // also ensure comments global section appears in step 2? we clone to keep trust section but will copy existing comments to step2 area for consistency 
-        const originalComments = document.getElementById('commentsGlobalSection');
-        const cloneArea = document.getElementById('stepTwoCommentsClone');
-        if (originalComments && cloneArea) {
-          // clone all comments content to second step to maintain trust visibility
-          cloneArea.innerHTML = '';
-          const cloneDiv = originalComments.cloneNode(true);
-          cloneDiv.id = "commentsCloneStep2";
-          cloneArea.appendChild(cloneDiv);
-          // rebind new comment button inside clone
-          const clonedPostBtn = cloneDiv.querySelector('#postCommentBtn');
-          const clonedTextarea = cloneDiv.querySelector('#newCommentInput');
-          if (clonedPostBtn && clonedTextarea) {
-            clonedPostBtn.addEventListener('click', function(e) {
-              const commentText = clonedTextarea.value.trim();
-              if (commentText !== "") {
-                const commentListDiv = cloneDiv.querySelector('#commentList');
-                if (commentListDiv) {
-                  const newCommentDiv = document.createElement('div');
-                  newCommentDiv.className = "comment-item";
-                  const randomAvatar = ["🔥","⭐","🎉","💰"][Math.floor(Math.random()*4)];
-                  newCommentDiv.innerHTML = `<div class="avatar">${randomAvatar}</div><div class="comment-text"><strong>You just now</strong> “${escapeHtml(commentText)}” <div class="comment-time">just now</div></div>`;
-                  commentListDiv.prepend(newCommentDiv);
-                  clonedTextarea.value = '';
-                }
-              } else {
-                alert("Write a comment first!");
-              }
-            });
-          }
-        }
-        // Also keep original comment section if needed but we might hide original? just disable extra duplicate? fine.
-        document.getElementById('commentsGlobalSection')?.setAttribute('style','display:none');
-      }
-    }
-    
-    // escape html
-    function escapeHtml(str) {
-      return str.replace(/[&<>]/g, function(m) {
-        if(m === '&') return '&amp;';
-        if(m === '<') return '&lt;';
-        if(m === '>') return '&gt;';
-        return m;
-      });
-    }
-    
-    // spin wheel logic with slight delay mimick animation and then show popup after finished
-    let spinAnimationRequest = null;
-    function startSpin() {
-      if (spinning) return;
-      spinning = true;
-      let spinAngle = currentRotation;
-      const extraSpin = Math.random() * 12 + 8; // 8-20 full spins
-      const targetDelta = extraSpin * Math.PI * 2;
-      const startTime = performance.now();
-      const duration = 1800;
-      const startRot = spinAngle;
-      function animateSpin(now) {
-        const elapsed = now - startTime;
-        let t = Math.min(1, elapsed / duration);
-        const easeOut = 1 - Math.pow(1 - t, 3);
-        const newRot = startRot + targetDelta * easeOut;
-        drawWheel(newRot);
-        if (t < 1) {
-          requestAnimationFrame(animateSpin);
-        } else {
-          currentRotation = newRot % (Math.PI * 2);
-          drawWheel(currentRotation);
-          spinning = false;
-          // After spin simulation, slight delay for realism and show popup
-          setTimeout(() => {
-            showQualifyPopup();
-          }, 180);
-        }
-      }
-      requestAnimationFrame(animateSpin);
-    }
-    
-    spinBtn.addEventListener('click', () => {
-      if (!spinning) {
-        startSpin();
+  };
+  setTimeout(decrease, 6000);
+})();
+
+/* ─────────────────────────────────────────────
+   3. LIVE TOAST NOTIFICATIONS
+───────────────────────────────────────────── */
+(function toasts() {
+  const people = [
+    { name: 'Ibrahim',  loc: 'Kano',           init: 'IB' },
+    { name: 'Chioma',   loc: 'Lagos',          init: 'CH' },
+    { name: 'Emeka',    loc: 'Enugu',          init: 'EM' },
+    { name: 'Fatima',   loc: 'Abuja',          init: 'FA' },
+    { name: 'Tunde',    loc: 'Ibadan',         init: 'TU' },
+    { name: 'Blessing', loc: 'Port Harcourt',  init: 'BL' },
+    { name: 'Uche',     loc: 'Benin City',     init: 'UC' },
+    { name: 'Amara',    loc: 'Warri',          init: 'AM' },
+  ];
+  const actions = [
+    'just received ₦150 🎉',
+    'just completed the offer ✅',
+    'just claimed their ₦150 💰',
+  ];
+
+  const container = document.getElementById('toast-container');
+  let idx = 0;
+
+  const show = () => {
+    const p   = people[idx % people.length];
+    const msg = actions[Math.floor(Math.random() * actions.length)];
+    idx++;
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `
+      <div class="toast-avatar">${p.init}</div>
+      <div>
+        <div class="toast-name">${p.name} from ${p.loc}</div>
+        <div class="toast-msg">${msg}</div>
+        <div class="toast-time">Just now</div>
+      </div>`;
+    container.prepend(toast);
+
+    // Hide after 4s
+    setTimeout(() => {
+      toast.classList.add('hiding');
+      setTimeout(() => toast.remove(), 380);
+    }, 4000);
+
+    // Schedule next
+    setTimeout(show, Math.random() * 5500 + 4000); // 4–9.5 sec gap
+  };
+
+  setTimeout(show, 2200);
+})();
+
+/* ─────────────────────────────────────────────
+   4. STEP MODAL FLOW
+───────────────────────────────────────────── */
+(function stepFlow() {
+  const modal     = document.getElementById('modal');
+  const allSteps  = modal.querySelectorAll('[data-step]');
+  const heroCta   = document.getElementById('hero-cta');
+  const finalCta  = document.getElementById('final-cta');
+  const btnYes    = document.getElementById('btn-yes');
+  const btnNo     = document.getElementById('btn-no');
+  const btnClaim  = document.getElementById('btn-claim');
+  const fillBar   = document.getElementById('progress-fill');
+  const stepPill  = document.getElementById('step-pill');
+
+  const STEPS = {
+    pct:   { 1: '33%',      2: '66%',      3: '100%'    },
+    label: { 1: 'Step 1 of 3', 2: 'Step 2 of 3', 3: 'Step 3 of 3' },
+  };
+
+  function showStep(n) {
+    allSteps.forEach(s => s.classList.remove('active'));
+    const target = modal.querySelector(`[data-step="${n}"]`);
+    if (target) target.classList.add('active');
+    // Update progress bar
+    fillBar.style.width  = STEPS.pct[n]   || '33%';
+    stepPill.textContent = STEPS.label[n] || 'Step 1 of 3';
+  }
+
+  function openModal() {
+    showStep(1);
+    modal.classList.add('open');
+    triggerVibration();
+    // Auto-advance to question after 2.4s
+    setTimeout(() => showStep(2), 2400);
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+  }
+
+  heroCta.addEventListener('click', openModal);
+  finalCta.addEventListener('click', openModal);
+
+  btnYes.addEventListener('click', () => {
+    triggerVibration();
+    showStep(3);
+  });
+
+  btnNo.addEventListener('click', () => {
+    closeModal();
+    showStep(1); // reset for next open
+  });
+
+  btnClaim.addEventListener('click', () => {
+    triggerConfetti();
+    triggerVibration();
+    // Optional: close modal after brief delay
+    setTimeout(() => closeModal(), 800);
+  });
+
+  // Close on backdrop click
+  modal.addEventListener('click', e => {
+    if (e.target === modal) closeModal();
+  });
+})();
+
+/* ─────────────────────────────────────────────
+   5. SCROLL REVEAL
+───────────────────────────────────────────── */
+(function scrollReveal() {
+  const targets = document.querySelectorAll('.sr');
+  if (!window.IntersectionObserver) {
+    targets.forEach(el => el.classList.add('in'));
+    return;
+  }
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        obs.unobserve(e.target);
       }
     });
-    
-    // Popup buttons (YES / NO) both proceed to next step
-    const popupYes = document.getElementById('popupYes');
-    const popupNo = document.getElementById('popupNo');
-    function onPopupChoice() {
-      if (popupOverlay.style.visibility === 'visible') {
-        closePopupAndProceed();
-      }
-    }
-    popupYes.addEventListener('click', onPopupChoice);
-    popupNo.addEventListener('click', onPopupChoice);
-    
-    // final redirect button with CPA link placeholder
-    const finalRedirect = document.getElementById('finalRedirectBtn');
-    if (finalRedirect) {
-      finalRedirect.addEventListener('click', () => {
-        // YOUR_CPA_LINK_HERE placeholder replace with actual affiliate link
-        const cpaUrl = "YOUR_CPA_LINK_HERE";
-        if (cpaUrl && cpaUrl !== "YOUR_CPA_LINK_HERE") {
-          window.location.href = cpaUrl;
-        } else {
-          // for demo purposes: alert & simulate redirect info
-          alert("🔗 [Demo mode] Replace 'YOUR_CPA_LINK_HERE' with actual CPA offer link. Redirect would happen now.");
-          // Uncomment for production after placing real link:
-          // window.location.href = cpaUrl;
-        }
-      });
-    }
-    
-    // Post comment functionality (original section)
-    const postBtn = document.getElementById('postCommentBtn');
-    const commentInput = document.getElementById('newCommentInput');
-    const commentListDiv = document.getElementById('commentList');
-    if (postBtn && commentInput) {
-      postBtn.addEventListener('click', () => {
-        const newMsg = commentInput.value.trim();
-        if (newMsg !== "") {
-          const newComment = document.createElement('div');
-          newComment.className = "comment-item";
-          const randomFace = ["🤩","🤑","😍","🔥"][Math.floor(Math.random()*4)];
-          newComment.innerHTML = `<div class="avatar">${randomFace}</div><div class="comment-text"><strong>Winner</strong> “${escapeHtml(newMsg)}” <div class="comment-time">Just now</div></div>`;
-          commentListDiv.prepend(newComment);
-          commentInput.value = "";
-        } else {
-          alert("Please share your excitement!");
-        }
-      });
-    }
-    
-    // Re-attach for clone if needed? But will be handled on second step clone event listeners in closePopupAndProceed yes.
-    // Additional behavior: If second step already visible but clone created we already have listener inside.
-    // Also make sure canvas is responsive redraw on resize minimal.
-    window.addEventListener('resize', () => { drawWheel(currentRotation); });
-    
-    // Prevent spinning multiple times and initial load ok.
-    // tiny prefill: simulate that wheel is ready.
-  })();
+  }, { threshold: 0.10 });
+  targets.forEach(el => obs.observe(el));
+})();
+
+/* ─────────────────────────────────────────────
+   6. RESIZE: keep confetti canvas full-screen
+───────────────────────────────────────────── */
+window.addEventListener('resize', () => {
+  const c = document.getElementById('confetti');
+  c.width  = window.innerWidth;
+  c.height = window.innerHeight;
+});
 </script>
+
 </body>
 </html>
